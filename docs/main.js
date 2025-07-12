@@ -1,4 +1,4 @@
-import data from "./data.json" with { type: "json" };
+import dataset from "./data.json" with { type: "json" };
 // import dataset from "./tmp_data.json" with { type: "json" };
 
 const cagetories = ['All', 'Humanities/Social Science', 'Other', 'Math', 'Physics', 'Computer Science/AI', 'Biology/Medicine', 'Chemistry', 'Engineering']
