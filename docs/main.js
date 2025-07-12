@@ -32,7 +32,7 @@ const createSelect = () => {
 
 const draw = (filterValue = 'All') => {
     const container = document.getElementById("container");
-    container.innerHTML = ''; // clear
+    container.innerHTML = 'load...'; // clear
 
     const data = dataset.content.filter(v => {
 	if(filterValue === 'All') {
@@ -83,6 +83,13 @@ const draw = (filterValue = 'All') => {
 	
 	container.appendChild(content_div);
     });
+    renderMathInElement(container, {
+	delimiters: [
+            { left: "$", right: "$", display: false },
+            { left: "$$", right: "$$", display: true }
+	],
+	throwOnError: false
+    });
 }
 
 const init = () => {
@@ -93,14 +100,6 @@ const init = () => {
     header.appendChild(select_ele);
     
     draw('All')
-
-    renderMathInElement(container, {
-	delimiters: [
-            { left: "$", right: "$", display: false },
-            { left: "$$", right: "$$", display: true }
-	],
-	throwOnError: false
-    });
 }
 
 window.addEventListener("DOMContentLoaded", init)
