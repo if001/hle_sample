@@ -30,5 +30,31 @@
     overflow-wrap: break-word;
     flex-grow: 1;
 }
-.category {}
+
+.category-0 {}
+.category-1 {
+    color: #ffa500
+}
+.category-2 {
+    color: #696969
+}
+.category-3 {
+    color: #1e90ff
+}
+.category-4 {
+    color: #28A745
+}
+.category-5 {
+    color: #DC3545
+}
+.category-6 {
+    color: #ff1493
+}
+.category-7 {
+    color: #5F4B8B
+}
+.category-8 {
+    color: #8B4513
+}
+
 .answer {}

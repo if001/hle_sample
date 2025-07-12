@@ -1,8 +1,8 @@
-import dataset from "./data.json" with { type: "json" };
-// import dataset from "./tmp_data.json" with { type: "json" };
-
 const cagetories = ['All', 'Humanities/Social Science', 'Other', 'Math', 'Physics', 'Computer Science/AI', 'Biology/Medicine', 'Chemistry', 'Engineering']
+let dataset = {content: []}
+let page = 1
 
+// ================================================== //
 const createSelect = () => {
     const selectElement = document.createElement('select');
     selectElement.id = 'select_catergory';
@@ -22,17 +22,16 @@ const createSelect = () => {
 
     selectElement.addEventListener('change', (event) => {
         const selectedValue = event.target.value;
-	console.log("selectedValue", selectedValue);
-	draw(selectedValue);
+	if(dataset.content.length != 0) {
+	    new Promise(r => r(draw(selectedValue)))
+	}
     })
-    
     return selectElement
 }
 
-
 const draw = (filterValue = 'All') => {
     const container = document.getElementById("container");
-    container.innerHTML = 'load...'; // clear
+    container.innerHTML = '';
 
     const data = dataset.content.filter(v => {
 	if(filterValue === 'All') {
@@ -40,12 +39,12 @@ const draw = (filterValue = 'All') => {
 	}
 	return v['category'] === filterValue
     })
-    
+
     const total_count = document.createElement("div");
     total_count.className = 'total-count';
     total_count.textContent = 'Total: ' + data.length;
-    container.appendChild(total_count);
     
+    container.appendChild(total_count);
     data.forEach(item => {
 	const content_div = document.createElement("div");
 	content_div.className = 'content';
@@ -69,37 +68,53 @@ const draw = (filterValue = 'All') => {
 
 	const has_image = document.createElement("p");
 	has_image.className = "has_image";
-	has_image.textContent = item["has_image"] === 'has_image' ? 'has image' : 'no image'
+	has_image.textContent = item["image"] === 'has image' ? 'has image' : 'no image';
 	
 	const category = document.createElement("p");
-	category.className = "category";
-	category.textContent = "category: " + item["category"]
+	const cate_idx = cagetories.findIndex(v => v === item['category'])
+	category.className = "category-"+cate_idx;
+	category.textContent = "category: " + item["category"];
+
+	const btn = document.createElement("button");
+	btn.innerHTML = 'show tex';
+	btn.addEventListener('click', (event) => {
+	    renderMathInElement(content_div, {
+		delimiters: [
+		    { left: "$", right: "$", display: false },
+		    { left: "$$", right: "$$", display: true }
+		],
+		throwOnError: false
+	    });
+	})
 	
 	content_div.appendChild(id);
 	content_div.appendChild(div_qa);
 	content_div.appendChild(answer);
 	content_div.appendChild(category);
 	content_div.appendChild(has_image);
-	
+	content_div.appendChild(btn);
 	container.appendChild(content_div);
-    });
-    renderMathInElement(container, {
-	delimiters: [
-            { left: "$", right: "$", display: false },
-            { left: "$$", right: "$$", display: true }
-	],
-	throwOnError: false
     });
 }
 
 const init = () => {
-    const header = document.getElementById("header");
-    container.innerHTML = ''; // clear
+    const load_ele = document.getElementById("load");
+    load_ele.innerHTML = 'loading'
     
+    const header_ele = document.getElementById("header");
     const select_ele = createSelect();
-    header.appendChild(select_ele);
-    
-    draw('All')
+    header_ele.appendChild(select_ele);
+
+    // fetch('./tmp_data.json')
+    fetch('./data.json')
+	.then(r => r.json())
+	.then(r => {
+	    dataset = r
+	    return new Promise((r) => r(draw('All')))
+	})
+	.then(() => {
+	    load_ele.innerHTML = ''
+	});
 }
 
 window.addEventListener("DOMContentLoaded", init)
